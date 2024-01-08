@@ -9,12 +9,14 @@ import org.springframework.web.bind.annotation.*;
 import com.example.demo.request.UserCredentials;
 import com.example.demo.services.AuthService;
 
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/api")
 public class UserController {
 
 	@Autowired
     private AuthService authService;
+	
 
  @PostMapping("/signin")
  public ResponseEntity<String> signIn(@RequestBody UserCredentials userCredentials) {
@@ -28,6 +30,7 @@ public class UserController {
      }
     
  }
+
 
  @PostMapping("/signup")
  public String signUp(@RequestBody UserCredentials userCredentials) {
