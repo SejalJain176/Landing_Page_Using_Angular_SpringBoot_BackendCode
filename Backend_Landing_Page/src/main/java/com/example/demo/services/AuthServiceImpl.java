@@ -1,6 +1,7 @@
 package com.example.demo.services;
 
 import java.util.Date;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
@@ -11,6 +12,9 @@ import com.example.demo.request.UserCredentials;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+
+import java.security.Key;
 
 //AuthServiceImpl.java
 @Service
@@ -34,21 +38,30 @@ public class AuthServiceImpl implements AuthService {
     
  @Override
  public String authenticateUser(UserCredentials user) {
-    
-     if ("validUsername".equals(user.getUsername()) && "validPassword".equals(user.getPassword())) {
-         return generateJwtToken(user.getUsername());
-     }
+	String username= user.getUsername();
+	
+	
+	 Optional<UserCredentials> storedUser = userRepository.findByUsername(username);
+	 
+	 if (storedUser.isPresent()) {
+		    UserCredentials user1 = storedUser.get();
+		    String Password = user1.getPassword();
+		    
+		    if(user.getPassword().equals(Password)) {
+		    	 return generateJwtToken(user.getUsername());
 
-     
-     return null;
+		    }
+		} 
+	 return null;
  }
 
  private String generateJwtToken(String username) {
      
+	 Key key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
      return Jwts.builder()
              .setSubject(username)
              .setExpiration(new Date(System.currentTimeMillis() + 86400000)) // 24 hours
-             .signWith(SignatureAlgorithm.HS512, "abc987h-pokkk9099799(((())#89908nmbjn")
+             .signWith(key)
              .compact();
  }
 
