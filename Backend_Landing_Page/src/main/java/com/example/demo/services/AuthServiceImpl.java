@@ -26,11 +26,11 @@ public class AuthServiceImpl implements AuthService {
 
     public String signUp(UserCredentials user) {
         // to check if the username is already taken
-        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
-            return "Username is already taken. Choose another one.";
+        if (!userRepository.findByUsername(user.getUsername()).isEmpty()) {
+            return null;
         }
 
-        // Save the user to the database
+        
         userRepository.save(user);
 
         return "User successfully signed up!";

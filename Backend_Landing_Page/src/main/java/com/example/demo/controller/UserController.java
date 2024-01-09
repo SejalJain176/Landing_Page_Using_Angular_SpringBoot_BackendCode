@@ -32,12 +32,17 @@ public class UserController {
  }
 
 
- @PostMapping("/signup")
- public String signUp(@RequestBody UserCredentials userCredentials) {
-     
-	 String Message=authService.signUp(userCredentials);
-	 
-     return "Sign Up Successful";
- }
+	@PostMapping("/signup")
+	public ResponseEntity<String> signUp(@RequestBody UserCredentials userCredentials) {
+
+		
+		String Message = authService.signUp(userCredentials);
+
+		if (Message!=null) {
+			return ResponseEntity.ok(Message);
+		} else {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid UserName");
+		}
+	}
 }
 
